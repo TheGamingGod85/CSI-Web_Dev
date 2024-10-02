@@ -67,7 +67,7 @@ This project is a RESTful API for a simple Task Management application. It allow
   {
       "title": "Updated Task Title",
       "priority": "medium",
-      "dueDate": "21-10-2024",
+      "dueDate": "2024-10-21",
       "status": "ongoing"
   }
   ```
