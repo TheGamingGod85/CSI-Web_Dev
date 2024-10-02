@@ -77,8 +77,7 @@ This project is a RESTful API for a simple Task Management application. It allow
 
 ## Postman Workspace
 You can import and test the API using the provided Postman workspace:
-[CSI ToDo API Postman Workspace](https://www.postman.com/mission-participant-78873652/workspace/csi-todo-api)
-The name of the account on Postman is different because it was created to reduce spam on my main email.
+[CSI ToDo API Postman Workspace](https://www.postman.com/mission-participant-78873652/workspace/csi-todo-api). The name of the account on Postman is different because it was created to reduce spam on my main email.
 
 ## Author
 **Aayushya Lakkadwala**  
