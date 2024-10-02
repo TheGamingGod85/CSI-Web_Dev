@@ -95,8 +95,6 @@ router.get('/due/:dueDate', async (req, res) => {
 router.get('/status/:status', async (req, res) => {
     try {
         const { status } = req.params;
-        console.log(`Fetching tasks with status: ${status}`); // Log the status being fetched
-
         const tasks = await Task.findAll({ where: { status } });
         if (tasks.length === 0) return res.status(404).json({ error: 'No tasks found with this status' });
         res.json(tasks);

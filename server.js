@@ -1,4 +1,4 @@
-// src/index.js
+// server.js
 const express = require('express');
 const sequelize = require('./src/database');
 const TaskRoutes = require('./src/routes/tasks');
