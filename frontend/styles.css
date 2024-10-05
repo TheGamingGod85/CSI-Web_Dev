@@ -1,0 +1,118 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+button {
+    margin-bottom: 20px;
+}
+
+#task-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid */
+    gap: 20px; /* Space between tiles */
+}
+
+.task-tile {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.task-tile:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.task-title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px; /* Space below the title */
+    padding: 5px; /* Add padding for aesthetics */
+    color: white; /* Text color for better visibility */
+    border-radius: 4px; /* Rounded corners */
+}
+
+.high-priority {
+    background-color: #ff4d4d; /* Red for high priority */
+}
+
+.medium-priority {
+    background-color: #ffcc00; /* Yellow for medium priority */
+}
+
+.low-priority {
+    background-color: #4dff4d; /* Green for low priority */
+}
+
+.task-footer {
+    padding: 8px;
+    border-radius: 4px;
+    color: white; /* Text color for better visibility */
+    text-align: center; /* Center align footer text */
+    margin-top: auto; /* Push footer to the bottom of the tile */
+}
+
+.pending {
+    background-color: #ff9900; /* Orange for pending */
+}
+
+.ongoing {
+    background-color: #007bff; /* Blue for ongoing */
+}
+
+.done {
+    background-color: #28a745; /* Green for done */
+}
+
+.backlog {
+    background-color: #6c757d; /* Grey for backlog */
+}
+
+.task-info {
+    margin: 5px 0;
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

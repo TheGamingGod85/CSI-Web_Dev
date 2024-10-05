@@ -1,9 +1,11 @@
 // server.js
 const express = require('express');
+const cors = require('cors');
 const sequelize = require('./src/database');
 const TaskRoutes = require('./src/routes/tasks');
 
 const app = express();
+app.use(cors());
 app.use(express.json()); // Middleware for parsing JSON requests
 
 app.use('/tasks', TaskRoutes); // Register task routes

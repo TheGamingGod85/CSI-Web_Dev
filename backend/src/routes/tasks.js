@@ -15,10 +15,29 @@ router.post('/new', async (req, res) => {
     }
 });
 
-// Read all tasks
+// Read all tasks with filtering and sorting
 router.get('/', async (req, res) => {
     try {
-        const tasks = await Task.findAll();
+        const { status, priority } = req.query; // Accept query parameters
+        const whereClause = {};
+        
+        // Add status filter if provided
+        if (status) {
+            whereClause.status = status;
+        }
+
+        const orderClause = [];
+        
+        // Add priority sorting if provided
+        if (priority) {
+            orderClause.push(['priority', 'ASC']); // Assuming higher priorities are sorted first
+        }
+
+        const tasks = await Task.findAll({
+            where: whereClause,
+            order: orderClause
+        });
+
         res.json(tasks);
     } catch (error) {
         res.status(500).json({ error: error.message });
