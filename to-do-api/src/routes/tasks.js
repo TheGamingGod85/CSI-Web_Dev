@@ -1,6 +1,6 @@
 // src/routes/tasks.js
 const express = require('express');
-const { Op } = require('sequelize'); // Import Op from Sequelize
+const { Op } = require('sequelize');
 const router = express.Router();
 const Task = require('../models/task.model');
 
