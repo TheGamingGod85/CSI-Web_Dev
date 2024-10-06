@@ -34,8 +34,8 @@ The Contact Form API allows users to submit their contact information through a 
     ```
     MONGO_URI=mongodb+srv://<username>:<password>@cluster0.dc8k1.mongodb.net/contactDB?retryWrites=true&w=majority
     ADMIN_EMAIL=your_admin_email@example.com
-    MAILGUN_USER=postmaster@sandbox81b5f5f87ff841ab99b3d0333ae2b5c4.mailgun.org
-    MAILGUN_PASSWORD=70e6c3cec1bc17dad42b24abdd79a304-3724298e-5e93abc0
+    MAILGUN_USER=Mail Me Back If You need this.
+    MAILGUN_PASSWORD=Mail Me Back If You need this.
     ```
 4. **Run the Application**:
     ```bash
