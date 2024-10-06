@@ -235,21 +235,36 @@
     <div class="filter-sort-container">
         <button id="openModal">Create New Task</button>
         <div>
-            <!-- <select id="filterStatus">
-                <option value="">Filter by Status</option>
+            <label for="priorityFilter">Filter by Priority:</label>
+            <select id="priorityFilter">
+                <option value="">All</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+        
+            <label for="statusFilter">Filter by Status:</label>
+            <select id="statusFilter">
+                <option value="">All</option>
                 <option value="pending">Pending</option>
                 <option value="ongoing">Ongoing</option>
                 <option value="done">Done</option>
                 <option value="backlog">Backlog</option>
-            </select> -->
-            <label for="dateSearch">Search by Due Date:</label>
-            <input type="date" id="dateSearch" />
-            
+            </select>
+        
+            <label style="visibility: hidden;" for="sortDropdown">Sort by Priority:</label>
+            <select style="visibility: hidden;" id="sortDropdown">
+                <option value="None">None</option>
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+        
             <label for="sortDateDropdown">Sort by Due Date:</label>
             <select id="sortDateDropdown">
                 <option value="asc">Ascending</option>
                 <option value="desc">Descending</option>
             </select>
+            <button id="applyFilters" style="visibility: hidden;">Apply</button>
             <button id="resetFiltersButton" class="btn">Reset Filters</button>
 
         </div>
@@ -287,18 +302,26 @@
 
     <script>
         let currentTaskId = null; // For editing tasks
-        let sortOrder = 'asc'; // Default sort order
-        let dateSortOrder = 'asc'; // Default date sort order
+        let sortOrder = 'asc';  // Default sort order for priority
+        let dateSortOrder = 'asc'; // Default sort order for due date
 
-        // Function to fetch tasks
-        async function fetchTasks(filter = '', dateFilter = '') {
+        async function fetchTasks(filter = '', priorityFilter = '', sortBy = 'dueDate', sortOrder = 'asc') {
             try {
                 const url = new URL('http://localhost:3000/tasks');
 
-                // Add filter for status if provided
+                // Add status filter if provided
                 if (filter) {
                     url.searchParams.append('status', filter);
                 }
+
+                // Add priority filter if provided
+                if (priorityFilter) {
+                    url.searchParams.append('priority', priorityFilter);
+                }
+
+                // Add sorting by field and order
+                url.searchParams.append('sortBy', sortBy);
+                url.searchParams.append('sortOrder', sortOrder);
 
                 const response = await fetch(url);
 
@@ -306,44 +329,9 @@
                     throw new Error('Network response was not ok');
                 }
 
-                let tasks = await response.json();
+                const tasks = await response.json();
                 const taskContainer = document.getElementById('task-container');
                 taskContainer.innerHTML = '';
-
-                // Filter tasks by due date if a date is provided
-                if (dateFilter) {
-                    tasks = tasks.filter(task => {
-                        const taskDueDate = new Date(task.dueDate).toISOString().split('T')[0]; // Format as YYYY-MM-DD
-                        return taskDueDate === dateFilter; // Compare only the date part
-                    });
-                }
-
-                // Sort tasks by status first, then by priority, and finally by due date
-                tasks.sort((a, b) => {
-                    // Status comparison
-                    const statusOrder = ['pending', 'ongoing', 'done', 'backlog'];
-                    const statusComparison = statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
-                    if (statusComparison !== 0) {
-                        return statusComparison; // Sort by status first
-                    }
-
-                    // Priority comparison
-                    const priorityOrder = ['low', 'medium', 'high'];
-                    let priorityComparison = priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority);
-                    if (sortOrder === 'desc') {
-                        priorityComparison = -priorityComparison; // Adjust based on sort order
-                    }
-
-                    // Due date comparison
-                    const dateA = new Date(a.dueDate).getTime();
-                    const dateB = new Date(b.dueDate).getTime();
-                    let dateComparison = dateA - dateB;
-                    if (dateSortOrder === 'desc') {
-                        dateComparison = -dateComparison; // Adjust based on sort order
-                    }
-
-                    return dateComparison || priorityComparison; // First sort by date, then by priority
-                });
 
                 // Create tiles for each task
                 tasks.forEach(task => {
@@ -371,18 +359,41 @@
             }
         }
 
-        // Reset function to clear filters
-        function resetFilters() {
-            document.getElementById('dateSearch').value = ''; // Clear date search input
-            document.getElementById('sortDropdown').selectedIndex = 0; // Reset priority sort dropdown to default
-            document.getElementById('sortDateDropdown').selectedIndex = 0; // Reset date sort dropdown to default
+        // Event listener for the priority filter dropdown
+        document.getElementById('priorityFilter').onchange = function() {
+            const priorityFilter = this.value; // Get the selected priority filter
+            fetchTasks('', priorityFilter, 'dueDate', 'asc'); // Fetch tasks with the current filter and sorting
+        };
 
-            // Fetch all tasks without filters
-            fetchTasks(); // Call fetchTasks without any parameters
-        }
+        // Event listener for the priority sort dropdown
+        document.getElementById('sortDropdown').onchange = function() {
+            sortOrder = this.value; // Update sort order based on selection
+            fetchTasks('', '', 'priority', sortOrder); // Fetch tasks with the current sorting
+        };
 
-        // Event listener for the reset filters button
-        document.getElementById('resetFiltersButton').onclick = resetFilters;
+        // Event listener for the date sort dropdown
+        document.getElementById('sortDateDropdown').onchange = function() {
+            dateSortOrder = this.value; // Update date sort order based on selection
+            fetchTasks('', '', 'dueDate', dateSortOrder); // Fetch tasks with the current sorting
+        };
+
+        // Event listener for status filter dropdown
+        document.getElementById('statusFilter').onchange = function() {
+            const statusFilter = this.value; // Get the selected status filter
+            fetchTasks(statusFilter, '', 'dueDate', dateSortOrder); // Fetch tasks with the current filter
+        };
+
+        document.getElementById('resetFiltersButton').addEventListener('click', function() {
+            // Reset the filter and sort dropdowns
+            document.getElementById('priorityFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('sortDropdown').value = 'None';  // Reset to default sort order
+            document.getElementById('sortDateDropdown').value = 'asc';  // Reset to default date sort order
+
+                // Fetch tasks without any filters or sorting
+                fetchTasks();
+        });
+
                             
 
 

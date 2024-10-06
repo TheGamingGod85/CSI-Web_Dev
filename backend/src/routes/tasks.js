@@ -1,6 +1,6 @@
 // src/routes/tasks.js
 const express = require('express');
-const { Op } = require('sequelize');
+const { Op } = require('sequelize'); // Import Op from Sequelize
 const router = express.Router();
 const Task = require('../models/task.model');
 
@@ -15,29 +15,10 @@ router.post('/new', async (req, res) => {
     }
 });
 
-// Read all tasks with filtering and sorting
+// Read all tasks
 router.get('/', async (req, res) => {
     try {
-        const { status, priority } = req.query; // Accept query parameters
-        const whereClause = {};
-        
-        // Add status filter if provided
-        if (status) {
-            whereClause.status = status;
-        }
-
-        const orderClause = [];
-        
-        // Add priority sorting if provided
-        if (priority) {
-            orderClause.push(['priority', 'ASC']); // Assuming higher priorities are sorted first
-        }
-
-        const tasks = await Task.findAll({
-            where: whereClause,
-            order: orderClause
-        });
-
+        const tasks = await Task.findAll();
         res.json(tasks);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -113,8 +94,7 @@ router.get('/due/:dueDate', async (req, res) => {
 // Get tasks by status
 router.get('/status/:status', async (req, res) => {
     try {
-        const { status } = req.params;
-        const tasks = await Task.findAll({ where: { status } });
+        const tasks = await Task.findAll({ where: { status: req.params.status } });
         if (tasks.length === 0) return res.status(404).json({ error: 'No tasks found with this status' });
         res.json(tasks);
     } catch (error) {
