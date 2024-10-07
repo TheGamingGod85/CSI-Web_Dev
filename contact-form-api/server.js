@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -10,6 +9,9 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(bodyParser.json());
+
+// Serve static files
+app.use(express.static('public'));
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
