@@ -1,5 +1,10 @@
 # Contact Form API
 
+## Working Video
+https://github.com/user-attachments/assets/bd0d3960-c05f-411b-a606-7d95d51c5bbe
+
+
+
 ## Overview
 The Contact Form API allows users to submit their contact information through a web form. The submissions are stored in a MongoDB database and trigger email notifications to the site administrator. This project provides a simple and effective way to manage contact inquiries and ensure timely responses.
 
@@ -90,10 +95,6 @@ You can import and test the API using the provided Postman workspace:
 **Aayushya Lakkadwala**  
 0827CS231008  
 CSI Web-Dev Track
-
-### Final Notes
-- In Mailgun, sending emails is allowed only to verified emails if you are on the free tier. Since I am not paying for that, although I have attached proofs of my email working, if you want to check it yourself, just hit me an email at aayushyalakkadwala230051@acropolis.in, and I will add that email to the verified emails.
-- Make sure to replace the admin email in the `.env` section with your email to check working of email service.
 
 ## Proof of Working
 - POST Request in Postman
