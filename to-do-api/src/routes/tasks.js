@@ -63,6 +63,16 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// Delete all tasks
+router.delete('/delete/all', async (req, res) => {
+    try {
+        await Task.destroy({ where: {} });
+        res.json({ message: 'All tasks deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Get tasks by priority
 router.get('/priority/:priority', async (req, res) => {
     try {
