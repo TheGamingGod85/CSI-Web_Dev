@@ -1,8 +1,7 @@
-// routes/contact.js
 const express = require('express');
 const router = express.Router();
 const Contact = require('../models/Contact');
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 
 // POST - Submit a contact form
 router.post('/', async (req, res) => {
@@ -13,7 +12,7 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        // Save contact form submission to database
+        // Save contact form submission to the database
         const newContact = new Contact({
             name,
             email,
@@ -21,35 +20,38 @@ router.post('/', async (req, res) => {
         });
         await newContact.save();
 
-        // Send email notification to admin using Mailgun SMTP
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.mailgun.org',
-            port: 587,
-            auth: {
-                user: `${process.env.MAILGUN_USER}`,
-                pass: `${process.env.MAILGUN_PASSWORD}`,
-            },
-        });
-
-        const mailOptions = {
-            from: `${name} <${email}>`,
-            to: `${process.env.ADMIN_EMAIL}`,
-            subject: 'New Contact Form Submission',
-            text: `You have a new contact form submission from:
-                   Name: ${name}
-                   Email: ${email}
-                   Message: ${message}`,
+        // Prepare email data for Postmark
+        const emailData = {
+            From: process.env.ADMIN_EMAIL,
+            To: process.env.ADMIN_EMAIL,
+            Subject: 'New Contact Form Submission',
+            TextBody: `You have a new contact form submission from:
+                       Name: ${name}
+                       Email: ${email}
+                       Message: ${message}`,
+            ReplyTo: email,
+            TrackOpens: true,
+            MessageStream: "outbound",
         };
 
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                return console.log(error);
+        // Send the email via Postmark
+        const postmarkResponse = await axios.post('https://api.postmarkapp.com/email', emailData, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-Postmark-Server-Token': process.env.POSTMARK_API_KEY,
             }
-            console.log('Email sent: ' + info.response);
         });
 
-        res.status(201).json({ message: 'Contact form submitted successfully' });
+        if (postmarkResponse.data.ErrorCode === 0) {
+            console.log("Email sent successfully: " + postmarkResponse.data.MessageID);
+            res.status(201).json({ message: 'Contact form submitted successfully' });
+        } else {
+            throw new Error('Error sending email');
+        }
+
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -59,6 +61,16 @@ router.get('/', async (req, res) => {
     try {
         const contacts = await Contact.find();
         res.status(200).json(contacts);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Delete All Submissions
+router.delete('/', async (req, res) => {
+    try {
+        await Contact.deleteMany({});
+        res.status(200).json({ message: 'All contact form submissions have been deleted' });
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
     }
